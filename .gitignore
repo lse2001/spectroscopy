@@ -1,0 +1,4 @@
+*.dat
+*.hdr
+/venv/
+.idea/

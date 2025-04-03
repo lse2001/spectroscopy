@@ -9,7 +9,7 @@ data = image.load()
 # data is ImageArray type (similar to NumPy array)
 
 view = spectral.imshow(data, (29, 19, 9))
-# imshow expects np.ndarray or SpyFile object, that is why we have to load the data from BipFile first
+# imshow expects np.ndarray or SpyFile object, that is why we have to load the data from BipFile first to be ImageArray, which is similar to NumPy array
 # view is ImageView type
 
 plt.show()
