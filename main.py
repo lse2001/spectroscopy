@@ -8,8 +8,6 @@ image = spectral.open_image(envi_file)  # Manually add the parameter "byte order
 data = image.load()
 # data is ImageArray type (similar to NumPy array)
 
-view = spectral.imshow(data, (29, 19, 9))
 # imshow expects np.ndarray or SpyFile object, that is why we have to load the data from BipFile first to be ImageArray, which is similar to NumPy array
-# view is ImageView type
-
+plt.imshow(data[:, :, [40, 60, 40]])  # RGB for displaying the relative intensity of absorption
 plt.show()
