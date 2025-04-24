@@ -9,14 +9,57 @@ data = image.load()
 # data is ImageArray type (similar to NumPy array)
 
 
-plt.imshow(data[:,:,[0,0,0]])  # AxesImage type # Overwrites CURRENT axes
-spectral.imshow(data, bands=(0,0,0))  # ImageView type # Creates NEW figure
-# spectral.imshow expects numPy array-like object or SpyFile object, that is why we have to load the data from BipFile first to be ImageArray, which is similar to NumPy array
+# Access ALL metadata, is stored as dict
+metadata = image.metadata
+# Print metadata, u-prefix means unicode object
+for k, v in metadata.items():
+    print(k, v)
 
-plt.show(block="True")
+"""
+The wavelength list represents the number of spectral bands - i.e., how many different wavelengths were measured for each pixel.
+The number of pixels = lines * samples
+lines = number of rows
+samples = number of columns
+So if lines = 583 and samples = 571, then you have 332,993 pixels
+Each pixel has one reflectance value per wavelength, so:
+wavelengths = 427 means each pixel has a 427-element spectrum
 
-"""something about the imshow() method of spectral package vs imshow() method of plt package is changing the objects that are being displayed by plt.show()
-I think this issues comes from calling plt.imshow() after spectral.imshow() has already created objects. plt.imshow() deletes the previously created objects"""
+Each pixel at position [row, col] has a 1D spectrum (427 values in your case - one for each wavelength).
+"""
+
+"""
+Hyperspectral data structure:
+The data is a 3D array with shape (rows, cols, bands).
+Each pixel (x, y) has a full spectrum of reflectance values across wavelengths.
+Accessing data[y, x, band] gives the reflectance at:
+    - spatial position (x, y)
+    - specific wavelength corresponding to 'band' index
+In other words:
+Reflectance = f(x, y, wavelength)
+Example:
+data[200, 100, 42] = reflectance at pixel (x=100, y=200) and 43rd wavelength.
+"""
+
+
+
+fig1 = plt.figure()  # For spectral.imshow
+fig2 = plt.figure()  # For plt.imshow
+
+# Plot to specific figures
+plt.figure(fig1.number)  # Activate fig1
+spectral.imshow(data, bands=(0,0,0), fignum=fig1.number)  # spectral.imshow() Creates NEW figure, so we have to explicitly state which figure to populate
+plt.suptitle("Hyperspectral Data - spectral.imshow()")
+plt.gca().set_xlabel("X Position")
+plt.gca().set_ylabel("Y Position")
+
+plt.figure(fig2.number)  # Activate fig2
+plt.imshow(data[:,:,[0,0,0]])  # plt.imshow() overwrites CURRENT figure?
+plt.suptitle("Hyperspectral Data - plt.imshow()")
+plt.gca().set_xlabel("X Position")
+plt.gca().set_ylabel("Y Position")
+
+plt.show(block=True)
+
 
 """
 spectral.imshow()
