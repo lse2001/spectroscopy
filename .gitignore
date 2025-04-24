@@ -1,4 +1,6 @@
 *.dat
 *.hdr
+*.npy
+*.csv
 /venv/
 .idea/
