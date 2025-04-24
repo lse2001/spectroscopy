@@ -1,5 +1,6 @@
 import spectral
 import matplotlib.pyplot as plt
+import numpy as np
 
 envi_file = "MIPPR_IDC_ARA_PB_01.hdr"
 image = spectral.open_image(envi_file)  # Manually add the parameter "byte order" to the hdr file since it was not specified. 0 corresponds to little-endian and 1 corresponds to big-endian.
@@ -7,7 +8,6 @@ image = spectral.open_image(envi_file)  # Manually add the parameter "byte order
 
 data = image.load()
 # data is ImageArray type (similar to NumPy array)
-
 
 # Access ALL metadata, is stored as dict
 metadata = image.metadata
@@ -40,8 +40,6 @@ Example:
 data[200, 100, 42] = reflectance at pixel (x=100, y=200) and 43rd wavelength.
 """
 
-
-
 fig1 = plt.figure()  # For spectral.imshow
 fig2 = plt.figure()  # For plt.imshow
 
@@ -59,7 +57,6 @@ plt.gca().set_xlabel("X Position")
 plt.gca().set_ylabel("Y Position")
 
 plt.show(block=True)
-
 
 """
 spectral.imshow()
