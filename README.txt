@@ -1,4 +1,7 @@
-This is a materials classification project based on IR spectroscopy. This is my second project at MIPPR.
+This is a materials classification project based on FTIR spectroscopy. This is my second project at MIPPR.
+Below are some personal notes for myself on Python.
+
+
 
 
 In spectra.py:
