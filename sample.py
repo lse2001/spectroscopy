@@ -1,4 +1,4 @@
-from main import data
+import numpy as np
 import spectral
 import matplotlib.pyplot as plt
 
@@ -28,6 +28,7 @@ Example:
 data[200, 100, 42] = reflectance at pixel (x=100, y=200) and 43rd wavelength.
 """
 
+data = np.load("hyperspectral_data.npy", allow_pickle=True)
 
 fig1 = plt.figure()  # For spectral.imshow
 fig2 = plt.figure()  # For plt.imshow

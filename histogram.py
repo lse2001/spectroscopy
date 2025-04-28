@@ -1,4 +1,3 @@
-from main import data, metadata
 from functions import *
 import matplotlib.pyplot as plt
 import numpy as np
