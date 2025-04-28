@@ -4,27 +4,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+# Define filenames
+means_filename = "mean_absorbance_values.npy"
+filtered_filename = "filtered_mean_absorbance_values.npy"
 
-filename = "mean_absorbance_values.npy"
+# Check if the required .npy files exist
+if not os.path.exists(means_filename) or not os.path.exists(filtered_filename):
+    raise IOError("Required data files not found. Please run main.py first to prepare mean_absorbance_values.npy and filtered_mean_absorbance_values.npy.")
 
-# Step 1: Calculate/load the means
-if os.path.exists(filename):
-    means = np.load(filename, allow_pickle=True)
-    # NumPy's save/load preserves the data values but not the exact object types (e.g., tuples become lists).
-    # To restore the original list of tuples after loading, we manually convert each list back into a tuple.
-    means = [tuple(item) for item in means]
-    print("Loaded mean absorbance values from %s." % filename)
-else:
-    means = get_mean_absorbance_list(data)
-    means_array = np.array(means, dtype=object)
-    np.save(filename, means_array)
-    print("Calculated and saved mean absorbance values to %s." % filename)
-    print(means[:5])
-
-
-
+# Load original mean absorbance values
+means = np.load(means_filename, allow_pickle=True)
 means = [tuple(item) for item in means]
+print("Loaded original mean absorbance values from %s." % means_filename)
 
+# Load filtered mean absorbance values
+filtered_means = np.load(filtered_filename, allow_pickle=True)
+filtered_means = [tuple(item) for item in filtered_means]
+print("Loaded filtered mean absorbance values from %s." % filtered_filename)
+
+# Calculate and print percent of data removed by filtering
+original_length = len(means)
+filtered_length = len(filtered_means)
+fraction_remaining = filtered_length / float(original_length)
+percent_removed = (1 - fraction_remaining) * 100
+
+print("Length of original means:", original_length)
+print("Length of filtered means:", filtered_length)
+print("Percent of data removed after filtering: %.2f%%" % percent_removed)
 
 """
 Note:
@@ -38,36 +44,15 @@ and calculating the distribution of their sample means. That is not what we are 
 We are working directly with the full set of measured pixel means (the population data).
 """
 
-
-# Step 2: Plot original distribution
+# Plot original distribution
 plt.figure(1)
 plot_mean_absorbance(means)
 plt.title("Distribution of Mean Absorbance per Pixel (Original)")
 
-# Step 3: Filter the data using IQR
-filtered_means = filter_by_iqr(means, multiplier=.8)
-
-# Step 4: Plot filtered distribution
+# Plot filtered distribution
 plt.figure(2)
 plot_mean_absorbance(filtered_means)
 plt.title("Distribution of Mean Absorbance per Pixel (After IQR Filtering)")
 
-# Step 5: Calculate and print percent of data removed
-original_length = len(means)
-filtered_length = len(filtered_means)
-
-fraction_remaining = filtered_length / float(original_length)
-percent_removed = (1 - fraction_remaining) * 100
-
-print("Length of original means:", len(means))
-print("Length of filtered means:", len(filtered_means))
-
-print("Percent of data removed after filtering: %.2f%%" % percent_removed)
-
-# Step 6: Show all figures
+# Show all figures
 plt.show()
-
-# Step 7: Save the filtered mean absorbance values for later selection
-filtered_array = np.array(filtered_means, dtype=object)
-np.save("filtered_mean_absorbance_values.npy", filtered_array)
-print("Filtered mean absorbance values saved successfully.")
