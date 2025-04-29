@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
 
 def get_mean_absorbance_list(data):
@@ -119,3 +120,33 @@ def plot_mean_absorbance(mean_values):
     plt.ylabel('Frequency')
     plt.title('Histogram of Mean Absorbance Values')
     plt.grid(True)
+
+
+def plot_pixel_spectrum(wavelengths, absorbance_spectrum, y, x):
+    """
+    Plot wavelength (cm-1) vs absorbance for a selected pixel.
+
+    Args:
+        wavelengths (np.ndarray): 1D array of wavenumbers in cm-1.
+        absorbance_spectrum (np.ndarray): 1D array of absorbance values at the selected pixel.
+        y (int): Row index of the selected pixel.
+        x (int): Column index of the selected pixel.
+
+    Returns:
+        None
+    """
+    plt.figure(figsize=(10, 6))  # Make the figure wider
+    plt.plot(wavelengths, absorbance_spectrum)
+    plt.xlabel('Wavenumber (cm-1)')
+    plt.ylabel('Absorbance')
+    plt.title("Absorbance Spectrum at Chosen Pixel\nRow: {} Column: {}".format(y, x))
+
+    # Set custom x-ticks: 10 evenly spaced ticks across the wavenumber range
+    ax = plt.gca()
+    min_wavenumber = np.min(wavelengths)
+    max_wavenumber = np.max(wavelengths)
+    ticks = np.linspace(min_wavenumber, max_wavenumber, num=10)
+    ticks = np.round(ticks).astype(int)
+    ax.set_xticks(ticks)
+
+    plt.tight_layout()  # Prevent label cutoff

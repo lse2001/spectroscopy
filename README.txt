@@ -2,11 +2,19 @@ This is a materials classification project based on FTIR spectroscopy. This is m
 Below are some personal notes for myself on Python.
 
 
-
-
 In spectra.py:
 We are able to use .squeeze() directly because data is a spectral.ImageArray, which is a subclass of NumPy's ndarray under the hood.
 So even though squeeze() is technically a NumPy method, it's available as a method of the array object itself: array.squeeze() is the same as np.squeeze(array)
+
+# .flatten() turns any array into a 1D array.
+# It collapses all dimensions into a single list of values.
+# Example: (583, 571) -> (332893,)
+# Always creates a copy.
+
+# .squeeze() removes dimensions of size 1.
+# It only removes axes where the size is 1.
+# Example: (1, 427) -> (427,)
+# Does nothing if there are no singleton dimensions.
 
 
 """

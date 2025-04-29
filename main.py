@@ -25,9 +25,21 @@ if __name__ == "__main__":
     data = image.load()
     metadata = image.metadata
 
+    # image = BipFile (a type of SpyFile)
+    # data = ImageArray (similar to a 3D NumPy array)
+    # After calling .load(), image -> data becomes full (rows, cols, bands) array
+    # BipFile contains metadata (like wavelengths) in image.metadata
+    # .hdr files might require manually specifying byte order if missing
+
     # Save full hyperspectral data
     np.save("hyperspectral_data.npy", data)
     print("Saved hyperspectral image array to hyperspectral_data.npy.")
+    print("Timestamp:", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+    # Save wavelengths separately
+    wavelengths = np.array(image.metadata['wavelength'])  # or 'wavenumber' if available
+    np.save("wavelengths.npy", wavelengths)
+    print("Saved wavelengths array to wavelengths.npy.")
     print("Timestamp:", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # Calculate mean absorbance values
