@@ -49,27 +49,38 @@ percentage_good_pixels = (num_good_pixels / float(total_pixels)) * 100
 
 print("Number of selected good pixels:", num_good_pixels)
 print("Total number of pixels:", total_pixels)
-print("Percentage of good pixels: %.2f%%" % percentage_good_pixels)
 
 
-# Initialize variables
-chosen_pixels = []
-random_attempts = 0
+
+# Build list of all good pixels
+good_pixels_list = []
+
 rows, cols = mean_absorbances_per_pixel.shape
 
-while len(chosen_pixels) < 3:
-    random_attempts += 1
-    y = random.randint(0, rows - 1)
-    x = random.randint(0, cols - 1)
-    if good_pixels_mask[y, x] and (y, x) not in chosen_pixels:
-        chosen_pixels.append((y, x))
+for y in range(rows):
+    for x in range(cols):
+        if good_pixels_mask[y, x]:
+            absorbance_array = data[y, x, :]  # <-- NEW: get absorbance spectrum
+            good_pixels_list.append((y, x, absorbance_array))  # <-- NEW: save (row, col, absorbance)
 
-print("Chosen pixels (y, x):", chosen_pixels)
-print("Total random selections needed:", random_attempts)
 
+print("Total number of good pixels found:", len(good_pixels_list))
+print("Percentage of good pixels: %.2f%%" % percentage_good_pixels)
+
+# SAVE the good pixels here
+np.save('good_pixels.npy', np.array(good_pixels_list, dtype=object))
+print("Saved good_pixels.npy with", len(good_pixels_list), "good pixels.")
+
+# Randomly pick 5 good pixels
+chosen_pixels = random.sample(good_pixels_list, 5)
+
+print("Chosen pixels (y, x):", [(y, x) for (y, x, _) in chosen_pixels])
+
+"""
 # Plot each chosen pixel
 for y, x in chosen_pixels:
     absorbance_spectrum = data[y, x, :]
     plot_pixel_spectrum(wavelengths, absorbance_spectrum, y, x)
 
 plt.show()
+"""
