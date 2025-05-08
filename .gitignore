@@ -6,4 +6,5 @@
 *.pyc
 /venv/
 .idea/
-TODO.txt
+/data/
+.DS_Store

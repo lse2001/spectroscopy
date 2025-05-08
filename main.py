@@ -5,8 +5,7 @@
 
 import os
 import datetime
-from dotenv import load_dotenv
-import spectral
+from spectral import envi
 import numpy as np
 from functions import get_mean_absorbance_list, filter_by_iqr
 
@@ -14,14 +13,12 @@ from functions import get_mean_absorbance_list, filter_by_iqr
 # Only calculate/save if running main.py directly
 if __name__ == "__main__":
     # Load environment variables
-    load_dotenv()
 
-    envi_file = os.getenv("ENVI_FILE")
-    if envi_file is None:
-        raise ValueError("Environment variable ENVI_FILE not set. Please define it before running.")
+    data_dir = "data"
+    hdr_file = os.path.join(data_dir, "hdr2.hdr")
+    dat_file = os.path.join(data_dir, "dat2.dat")
 
-    # Load hyperspectral image
-    image = spectral.open_image(envi_file)
+    image = envi.open(hdr_file, image=dat_file)
     data = image.load()
     metadata = image.metadata
 

@@ -33,8 +33,8 @@ overall_mean_absorbance = np.mean(mean_absorbances_per_pixel)
 print("Overall mean absorbance across all pixels:", overall_mean_absorbance)
 
 # Define lower and upper thresholds for filtering
-lower_threshold = overall_mean_absorbance + std_dev_absorbance
-upper_threshold = overall_mean_absorbance + 2 * std_dev_absorbance
+lower_threshold = overall_mean_absorbance + 2 * std_dev_absorbance
+upper_threshold = overall_mean_absorbance + 3 * std_dev_absorbance
 
 # Create a boolean mask for pixels between 1 and 2 standard deviations above the mean
 good_pixels_mask = np.logical_and(
