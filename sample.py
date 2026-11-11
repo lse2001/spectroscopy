@@ -1,5 +1,4 @@
 import numpy as np
-import spectral
 import matplotlib.pyplot as plt
 
 
@@ -30,15 +29,7 @@ data[200, 100, 42] = reflectance at pixel (x=100, y=200) and 43rd wavelength.
 
 data = np.load("hyperspectral_data.npy", allow_pickle=True)
 
-fig1 = plt.figure()  # For spectral.imshow
 fig2 = plt.figure()  # For plt.imshow
-
-# Plot to specific figures
-plt.figure(fig1.number)  # Activate fig1
-spectral.imshow(data, bands=(0,0,0), fignum=fig1.number)  # spectral.imshow() Creates NEW figure, so we have to explicitly state which figure to populate
-plt.suptitle("Hyperspectral Data - spectral.imshow()")
-plt.gca().set_xlabel("X Position")
-plt.gca().set_ylabel("Y Position")
 
 plt.figure(fig2.number)  # Activate fig2
 wavelengths = np.load("wavelengths.npy").astype(float)
