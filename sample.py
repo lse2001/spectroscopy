@@ -41,7 +41,13 @@ plt.gca().set_xlabel("X Position")
 plt.gca().set_ylabel("Y Position")
 
 plt.figure(fig2.number)  # Activate fig2
-plt.imshow(data[:,:,[0,0,0]])  # plt.imshow() overwrites CURRENT figure?
+wavelengths = np.load("wavelengths.npy").astype(float)
+band = np.argmin(np.abs(wavelengths - 2915))        # slice closest to 2915 cm-1 (C-H stretch)
+band_image = data[:, :, band]
+low, high = np.percentile(band_image, [1, 99])      # ignore extreme outliers
+plt.imshow(band_image, cmap='gray', vmin=low, vmax=high)
+plt.title("Band %d (%.0f cm-1)" % (band, wavelengths[band]))
+
 plt.suptitle("Hyperspectral Data - plt.imshow()")
 plt.gca().set_xlabel("X Position")
 plt.gca().set_ylabel("Y Position")
