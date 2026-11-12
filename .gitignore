@@ -5,6 +5,9 @@
 *.env
 *.pyc
 /venv/
+/venv314/
+/output/
+__pycache__/
 .idea/
 /data/
 .DS_Store
