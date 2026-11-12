@@ -21,4 +21,18 @@ upper_threshold = overall_mean_absorbance + 3 * std_dev_absorbance
 
 The script `model.py` loads labeled training data from `raw.csv` (the Open Specy reference library) and keeps only FTIR spectra, since the library also contains Raman and NIR data. It crops the training data to the wavenumber range both the library and the instrument measured, then interpolates the library and image spectra onto one shared wavenumber grid. Both are preprocessed the same way (Savitzky-Golay first derivative and SNV normalization) so the model compares peak shape rather than intensity. A logistic regression model is trained using scikit-learn and evaluated with cross-validation grouped by sample. Every pixel is then classified as plastic or non-plastic, and pixels that don't closely match any library spectrum are labeled "no match" as background. Results are exported to `pixel_predictions.csv`.
 
+The script `neural_networks/cnn_torch.py` uses the same data loading, preprocessing, cross-validation and "no match" step as `model.py`, but replaces logistic regression with a 1D convolutional neural network (CNN) built in PyTorch. Instead of learning one weight per wavenumber, the CNN slides small windows along the spectrum to learn local shapes such as peaks, then classifies each pixel from which shapes appear where. Results are exported to `pixel_predictions_torch.csv`.
+
+The script `neural_networks/cnn_keras.py` builds the same 1D CNN in TensorFlow/Keras, using Keras's built-in training loop (`compile` and `fit`) instead of the hand-written PyTorch loop. Results are exported to `pixel_predictions_keras.csv`.
+
 The script `plot_predictions.py` visualizes the output of `model.py`. It shows the mean absorbance image, the per-pixel prediction map, and the library match score map side by side, along with a histogram of match scores to help choose the `MIN_MATCH_CORR` cutoff.
+
+## Findings
+
+Results are for the `dat2` sample (39,592 pixels), trained on 15,333 FTIR library spectra. All three models share the same "no match" step, so they agree that 35,061 pixels (88.6%) are background, leaving 4,531 pixels (11.4%) to classify.
+
+Logistic regression reached about 95% cross-validated accuracy on the library. On the image it classified 3,607 pixels (9.1%) as plastic and 924 (2.3%) as not plastic. Its plastic predictions line up with particle-shaped regions in the image, mostly matching polyolefins (polyethylene/polypropylene), and agree with each pixel's closest library match 81% of the time.
+
+The PyTorch and Keras CNNs both reached about 99% cross-validated accuracy, but on the image they classified far fewer pixels as plastic: 2,200 (5.6%) for PyTorch and 1,169 (3.0%) for Keras. They agree with each pixel's closest library match only 51% and 38% of the time.
+
+We suspect the CNNs' accuracy is higher because cross-validation tests them on held-out library spectra, which are clean lab measurements similar to their training data, while image pixels are noisier and contain detector-stripe artifacts. The CNNs are flexible enough to learn fine details of the library spectra that help on the library but don't survive the noise in real image pixels (overfitting and domain shift). Logistic regression is a simpler model that relies on broader features, so it holds up better on the image. The image has no ground-truth labels, so agreement with the closest library match is only a proxy for accuracy. For now, logistic regression appears to be the most reliable model on real data. Training the CNNs with added noise and small wavenumber shifts (data augmentation) could help close the gap.
