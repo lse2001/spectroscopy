@@ -13,11 +13,11 @@ as these are more likely to correspond to real material interaction rather than 
 
 
 # Load hyperspectral data
-data = np.load('hyperspectral_data.npy', allow_pickle=True)
+data = np.load('output/hyperspectral_data.npy', allow_pickle=True)
 print("Loaded hyperspectral data with shape:", data.shape)
 
 # Load wavelengths
-wavelengths = np.load('wavelengths.npy')
+wavelengths = np.load('output/wavelengths.npy')
 wavelengths = wavelengths.astype(float)
 print("Loaded wavelengths array with shape:", wavelengths.shape)
 
@@ -68,7 +68,7 @@ print("Total number of good pixels found:", len(good_pixels_list))
 print("Percentage of good pixels: %.2f%%" % percentage_good_pixels)
 
 # SAVE the good pixels here
-np.save('good_pixels.npy', np.array(good_pixels_list, dtype=object))
+np.save('output/good_pixels.npy', np.array(good_pixels_list, dtype=object))
 print("Saved good_pixels.npy with", len(good_pixels_list), "good pixels.")
 
 # Randomly pick 5 good pixels

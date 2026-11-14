@@ -14,9 +14,9 @@ from matplotlib.patches import Patch
 
 MIN_MATCH_CORR = 0.70   # keep in sync with model.py
 
-cube = np.load("hyperspectral_data.npy")               # (rows, cols, bands)
+cube = np.load("output/hyperspectral_data.npy")               # (rows, cols, bands)
 rows, cols, bands = cube.shape
-results = pd.read_csv("pixel_predictions.csv")
+results = pd.read_csv("output/pixel_predictions.csv")
 
 # Panel 1: average all wavenumber slices into one picture
 mean_image = cube.mean(axis=2)

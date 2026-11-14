@@ -76,12 +76,12 @@ def preprocess(spectra, wavenumbers):
 
 # ---------------- 1. Load library, keep FTIR only ----------------
 t0 = time.time()
-header = pd.read_csv("raw.csv", nrows=0).columns
+header = pd.read_csv("data/raw.csv", nrows=0).columns
 spectral_columns = [c for c in header if c.replace('.', '').isdigit()]
 lib_wavenumbers = np.array([float(c) for c in spectral_columns])
 
 meta_columns = ['spectrum_type', 'plastic_or_not', 'material_class', 'sample_name']
-library = pd.read_csv("raw.csv", usecols=meta_columns + spectral_columns, low_memory=False)
+library = pd.read_csv("data/raw.csv", usecols=meta_columns + spectral_columns, low_memory=False)
 print("Loaded library: %d spectra (%.1f s)" % (len(library), time.time() - t0))
 print(library['spectrum_type'].value_counts(), "\n")
 
@@ -115,8 +115,8 @@ print(classification_report(y, cv_pred, target_names=['not plastic', 'plastic'])
 model.fit(lib_P, y)
 
 # ---------------- 6. Predict every pixel ----------------
-cube = np.load("hyperspectral_data.npy")            # (rows, cols, bands)
-img_wavenumbers = np.load("wavelengths.npy").astype(float)
+cube = np.load("output/hyperspectral_data.npy")            # (rows, cols, bands)
+img_wavenumbers = np.load("output/wavelengths.npy").astype(float)
 rows, cols, bands = cube.shape
 pixels = cube.reshape(-1, bands)
 pix_P = preprocess(pixels, img_wavenumbers)
@@ -148,7 +148,7 @@ results = pd.DataFrame({
     'best_match_label': library['plastic_or_not'].to_numpy()[best_idx],
     'prediction': prediction,
 })
-results.to_csv('pixel_predictions.csv', index=False)
+results.to_csv('output/pixel_predictions.csv', index=False)
 
 print("Pixels: %d" % len(results))
 print(results['prediction'].value_counts())

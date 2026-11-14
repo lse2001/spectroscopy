@@ -27,12 +27,12 @@ Example:
 data[200, 100, 42] = reflectance at pixel (x=100, y=200) and 43rd wavelength.
 """
 
-data = np.load("hyperspectral_data.npy", allow_pickle=True)
+data = np.load("output/hyperspectral_data.npy", allow_pickle=True)
 
 fig2 = plt.figure()  # For plt.imshow
 
 plt.figure(fig2.number)  # Activate fig2
-wavelengths = np.load("wavelengths.npy").astype(float)
+wavelengths = np.load("output/wavelengths.npy").astype(float)
 band = np.argmin(np.abs(wavelengths - 2915))        # slice closest to 2915 cm-1 (C-H stretch)
 band_image = data[:, :, band]
 low, high = np.percentile(band_image, [1, 99])      # ignore extreme outliers

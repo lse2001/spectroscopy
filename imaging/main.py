@@ -29,13 +29,13 @@ if __name__ == "__main__":
     # .hdr files might require manually specifying byte order if missing
 
     # Save full hyperspectral data
-    np.save("hyperspectral_data.npy", data)
+    np.save("output/hyperspectral_data.npy", data)
     print("Saved hyperspectral image array to hyperspectral_data.npy.")
     print("Timestamp:", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # Save wavelengths separately
     wavelengths = np.array(image.metadata['wavelength'])  # or 'wavenumber' if available
-    np.save("wavelengths.npy", wavelengths)
+    np.save("output/wavelengths.npy", wavelengths)
     print("Saved wavelengths array to wavelengths.npy.")
     print("Timestamp:", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     # Save raw mean absorbance values
     means_array = np.array(means, dtype=object)
-    np.save("mean_absorbance_values.npy", means_array)
+    np.save("output/mean_absorbance_values.npy", means_array)
     print("Saved original mean absorbance values to mean_absorbance_values.npy.")
     print("Timestamp:", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     # Save filtered mean absorbance values
     filtered_array = np.array(filtered_means, dtype=object)
-    np.save("filtered_mean_absorbance_values.npy", filtered_array)
+    np.save("output/filtered_mean_absorbance_values.npy", filtered_array)
     print("Saved filtered mean absorbance values to filtered_mean_absorbance_values.npy.")
     print("Timestamp:", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 

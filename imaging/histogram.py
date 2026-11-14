@@ -4,8 +4,8 @@ import numpy as np
 import os
 
 # Define filenames
-means_filename = "mean_absorbance_values.npy"
-filtered_filename = "filtered_mean_absorbance_values.npy"
+means_filename = "output/mean_absorbance_values.npy"
+filtered_filename = "output/filtered_mean_absorbance_values.npy"
 
 # Check if the required .npy files exist
 if not os.path.exists(means_filename) or not os.path.exists(filtered_filename):
