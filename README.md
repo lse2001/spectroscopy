@@ -27,12 +27,22 @@ The script `neural_networks/cnn_keras.py` builds the same 1D CNN in TensorFlow/K
 
 The script `plot_predictions.py` visualizes the output of `model.py`. It shows the mean absorbance image, the per-pixel prediction map, and the library match score map side by side, along with a histogram of match scores to help choose the `MIN_MATCH_CORR` cutoff.
 
+The script `export_for_tableau.py` combines the prediction files from all three models into tidy tables for a Tableau dashboard, saved to `output/tableau/`. It writes one row per pixel per model (`pixels.csv`), groups neighbouring plastic pixels into particles with their size, material class and confidence (`particles.csv`), summarizes each model's results (`model_summary.csv`), and exports the training library's metadata (`library.csv`).
+
 ## Findings
 
 Results are for the `dat2` sample (39,592 pixels), trained on 15,333 FTIR library spectra. All three models share the same "no match" step, so they agree that 35,061 pixels (88.6%) are background, leaving 4,531 pixels (11.4%) to classify.
 
-Logistic regression reached about 95% cross-validated accuracy on the library. On the image it classified 3,607 pixels (9.1%) as plastic and 924 (2.3%) as not plastic. Its plastic predictions line up with particle-shaped regions in the image, mostly matching polyolefins (polyethylene/polypropylene), and agree with each pixel's closest library match 81% of the time.
+Logistic regression reached about 94% cross-validated accuracy on the library. On the image it classified 3,607 pixels (9.1%) as plastic and 924 (2.3%) as not plastic, grouped into 527 particles. Its plastic predictions line up with particle-shaped regions in the image, mostly matching polyolefins (polyethylene/polypropylene), and agree with each pixel's closest library match 81% of the time.
 
-The PyTorch and Keras CNNs both reached about 99% cross-validated accuracy, but on the image they classified far fewer pixels as plastic: 2,200 (5.6%) for PyTorch and 1,169 (3.0%) for Keras. They agree with each pixel's closest library match only 51% and 38% of the time.
+The PyTorch and Keras CNNs both reached about 99% cross-validated accuracy, but on the image they classified fewer pixels as plastic: 2,924 (7.4%) for PyTorch and 2,515 (6.4%) for Keras. They agree with each pixel's closest library match 71% and 59% of the time. The CNNs also produced more isolated single-pixel detections, which are likely noise: 393 for PyTorch and 519 for Keras, compared with 351 for logistic regression.
+
+| Model | Plastic pixels | Not plastic pixels | Particles | Single-pixel particles | Agrees with closest match |
+|---|---|---|---|---|---|
+| Logistic regression | 3,607 (9.1%) | 924 (2.3%) | 527 | 351 | 81% |
+| PyTorch CNN | 2,924 (7.4%) | 1,607 (4.1%) | 572 | 393 | 71% |
+| Keras CNN | 2,515 (6.4%) | 2,016 (5.1%) | 752 | 519 | 59% |
+
+Neural network results vary slightly between runs and machines, so CNN numbers may differ a little each time the models are retrained.
 
 We suspect the CNNs' accuracy is higher because cross-validation tests them on held-out library spectra, which are clean lab measurements similar to their training data, while image pixels are noisier and contain detector-stripe artifacts. The CNNs are flexible enough to learn fine details of the library spectra that help on the library but don't survive the noise in real image pixels (overfitting and domain shift). Logistic regression is a simpler model that relies on broader features, so it holds up better on the image. The image has no ground-truth labels, so agreement with the closest library match is only a proxy for accuracy. For now, logistic regression appears to be the most reliable model on real data. Training the CNNs with added noise and small wavenumber shifts (data augmentation) could help close the gap.
